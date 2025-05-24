@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum Quiz</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #000428, #004e92);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .quiz-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      width: 350px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+    .question {
+      margin: 20px 0;
+      font-weight: bold;
+    }
+    .options button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #ffffff22;
+      border: 1px solid #ffffff55;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .options button:hover {
+      background: #ffffff44;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+    .glitch {
+      font-family: monospace;
+      color: #0ff;
+      animation: glitch 1s infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 2px 2px red; }
+      50% { text-shadow: -2px -2px lime; }
+      100% { text-shadow: 2px 2px red; }
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1 class="glitch">Quantum Quiz</h1>
+    <div id="quiz">
+      <div class="question" id="question"></div>
+      <div class="options" id="options"></div>
+      <div class="result" id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What element has the chemical symbol 'O'?",
+        options: ["Gold", "Oxygen", "Silver", "Iron"],
+        answer: "Oxygen"
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Mars", "Venus", "Jupiter", "Neptune"],
+        answer: "Mars"
+      },
+      {
+        question: "Who wrote '1984'?",
+        options: ["Orwell", "Shakespeare", "Twain", "Hemingway"],
+        answer: "Orwell"
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function loadQuestion() {
+      const q = quizData[current];
+      document.getElementById("question").innerText = q.question;
+      const opts = document.getElementById("options");
+      opts.innerHTML = "";
+      let optionsShuffled = [...q.options];
+      shuffle(optionsShuffled);
+      optionsShuffled.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (opt === q.answer) {
+            score++;
+            document.getElementById("result").innerText = "Correct! ✔️";
+          } else {
+            document.getElementById("result").innerText = `Wrong! ❌ It was ${q.answer}`;
+          }
+          setTimeout(() => {
+            current++;
+            document.getElementById("result").innerText = "";
+            if (current < quizData.length) {
+              loadQuestion();
+            } else {
+              document.getElementById("quiz").innerHTML = `<h2 class='glitch'>Your Score: ${score}/${quizData.length}</h2>`;
+            }
+          }, 1500);
+        };
+        opts.appendChild(btn);
+      });
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
